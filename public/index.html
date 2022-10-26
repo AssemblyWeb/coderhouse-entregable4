@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="http://localhost:8080/api/productos"  method="POST">
+        Title: <input label="Title" type="text" name="title" id="title">
+        <br>
+        Price: <input type="number" name="price" id="price">
+        <br>
+        Thumbnail: <input type="text" name="thumbnail" id="thumbnail">
+        <br>
+        <input type="submit" value="subir">
+    </form>
+</body>
+<style>
+    input{
+        margin: 10px;
+    }
+    form{
+        text-align: center;
+    }
+</style>
+</html>
