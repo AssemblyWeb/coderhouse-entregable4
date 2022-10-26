@@ -1,17 +1,10 @@
 require('dotenv').config()
-import express from 'express'
+const express = require('express')
 const app = express()
 app.use(express.json())
 const PORT = process.env.PORT || 8080
 
-import productosRouter from './routes/productos'
-
-// app.use('/',(_, res) => {
-//     res.status(200).json({
-//         health: "up",
-//         success: true
-//     })
-// })
+const productosRouter = require('./routes/productos')
 
 app.use('/api/productos', productosRouter)
 

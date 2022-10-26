@@ -1,33 +1,34 @@
 const fs = require('fs')
 import productsJson from "./productos.json"
-import { IProduct, IAddProduct } from "../types/types" 
 
-const productsData: IProduct[] = productsJson as IProduct[]
+const productsData = productsJson 
 
-export const getAllProducts = (): IProduct[] => productsData
+export const getAllProducts = () => productsData
 
-export const getProductById = (id: number): IProduct | string => {
+export const getProductById = (id) => {
     const findProduct = productsData.find(products => products.id === id)
     return findProduct ? findProduct : `No se encuentra producto con el id ${id}`
 }
 
-export const addProduct = async ({title, price, thumbnail}: IAddProduct): Promise<IProduct> => {
-    try {
+export const addProduct = ({title, price, thumbnail}) => {
+    try {        
+        
         const newProduct = {
             id: Math.max(...productsData.map(product => product.id)) +1,
             title, price, thumbnail
         }
-          //  const parsedData = JSON.parse(productsData)
-            //const newProductData = productsData.push(newProduct)
-            console.log(productsData, newProduct)
-            // await fs.promises.writeFile('./src/services/productos.json', JSON.stringify(newProductData))
-            return newProduct   
+        
+        productsData.push(newProduct)
+        fs.promises.writeFileSync('./src/services/productos.json', JSON.stringify(productsData))
+
+        return newProduct
+
     } catch (error) {
         throw new Error("No se pudo guardar el producto: " + title)
     }
 } 
 
-export const deleteProduct = async (id:number) => {
+export const deleteProduct = async (id) => {
     try {
         const deletedProductsData = await productsData.filter(product => product.id != id)
 
