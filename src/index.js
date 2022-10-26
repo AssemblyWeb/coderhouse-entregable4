@@ -2,7 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 app.use(express.json())
-const PORT = process.env.PORT || 8080
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static('public'))
 
 const productosRouter = require('./routes/productos')
 
@@ -13,6 +14,8 @@ app.get('/ping', (_, res) => {
     res.send("PONG")
 })
 
+const PORT = process.env.PORT || 8080
+
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
+    console.log(`Server listen on port http://localhost:${PORT}`)
 })

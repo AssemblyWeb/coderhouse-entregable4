@@ -1,41 +1,53 @@
 const fs = require('fs')
-import productsJson from "./productos.json"
+const productsJson = require("./productos.json")
 
-const productsData = productsJson 
+const getAllProducts = () => productsJson
 
-export const getAllProducts = () => productsData
-
-export const getProductById = (id) => {
+const getProductById = (id) => {
     const findProduct = productsData.find(products => products.id === id)
     return findProduct ? findProduct : `No se encuentra producto con el id ${id}`
 }
 
-export const addProduct = ({title, price, thumbnail}) => {
-    try {        
-        
-        const newProduct = {
-            id: Math.max(...productsData.map(product => product.id)) +1,
+const addProduct = async ({ title, price, thumbnail }) => {
+    try {
+        let newProduct = {
+            id: Math.max(...productsJson.map(product => product.id)) + 1,
             title, price, thumbnail
         }
-        
-        productsData.push(newProduct)
-        fs.promises.writeFileSync('./src/services/productos.json', JSON.stringify(productsData))
+
+        productsJson.push(newProduct)
+
+        await fs.promises.writeFile('./src/services/productos.json', JSON.stringify(productsJson))
 
         return newProduct
 
     } catch (error) {
         throw new Error("No se pudo guardar el producto: " + title)
     }
-} 
+}
 
-export const deleteProduct = async (id) => {
+const updateProduct = async (id, title, price, thumbnail) => {
     try {
-        const deletedProductsData = await productsData.filter(product => product.id != id)
+        const indexOfProduct = productsJson.findIndex(product => product.id === id)
+        productsJson[indexOfProduct] = { id, title, price, thumbnail }
 
-        //console.log(deletedProductsData)
-        await fs.promises.writeFile(`./productos.json`, deletedProductsData)
+        await fs.promises.writeFile('./src/services/productos.json', JSON.stringify(productsJson))
+
+        return `El producto con id ${id} fue actualizado`
+    } catch (error) {
+        throw new Error("No ")
+    }
+}
+
+const deleteProduct = async (id) => {
+    try {
+        const deletedProductsData = productsJson.filter(product => product.id != id)
+
+        await fs.promises.writeFile(`./src/services/productos.json`, JSON.stringify(deletedProductsData))
         return id
     } catch (error) {
         throw new Error("No se puede eliminar el producto con id: " + id)
     }
 }
+
+module.exports = { getAllProducts, getProductById, addProduct, updateProduct, deleteProduct }
