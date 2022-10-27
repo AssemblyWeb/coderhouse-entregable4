@@ -18,7 +18,6 @@ export class Contenedor {
     }
 
     addProduct = async ({title, price, thumbnail}: IAddProduct): Promise<IProduct> => {
-        try {
             const newProduct = {
                 id: Math.max(...productsData.map(product => product.id)) + 1,
                 title, price, thumbnail
@@ -27,32 +26,22 @@ export class Contenedor {
             await fs.promises.writeFile(`./src/services/${this.filename}`, JSON.stringify(productsData))
     
             return newProduct   
-        } catch (error) {
-            throw new Error("No se pudo guardar el producto: " + title)
-        }
     } 
 
     updateProduct = async ({id, ...restOfArguments}: IProduct): Promise<number | undefined> => {
-        try {
             const indexOfProduct = productsData.findIndex(product => product.id === id) 
             productsData[indexOfProduct] = {id, ...restOfArguments}
             await fs.promises.writeFile('./src/services/productos.json', JSON.stringify(productsData))
     
             return id
-        } catch (error) {
-            throw new Error("No se pudo actualizar el producto")
-        }
     }
     
     deleteProduct = async (id:number) => {
-        try {
             const deletedProductsData = productsData.filter(product => product.id != id)
             await fs.promises.writeFile(`./src/services/productos.json`, JSON.stringify(deletedProductsData))
     
             return id
-        } catch (error) {
-            throw new Error("No se puede eliminar el producto con id: " + id)
-        }
+
     }
 
 }
