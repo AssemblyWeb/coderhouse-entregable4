@@ -1,13 +1,15 @@
 import express from 'express'
 const router = express.Router()
-import * as productosService from '../services/productosService'
-
+import { productosService } from '../services/productosService'
 
 router.get('/', (_req, res) => {
     try {
         const allProducts = productosService.getAllProducts()
         
-        res.status(200).json(allProducts)
+        res.status(200).json([{
+            "index": "/index.html",
+            allProducts
+            }])
     } catch (error) {
         res.status(400).json({ error })        
     }
