@@ -1,21 +1,24 @@
-require('dotenv').config()
 const express = require('express')
 const app = express()
+const errorHandler = require('./src/middlewares/errorHandler.js')
+const morgan = require('morgan')
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
-const productosRouter = require('./routes/productos')
+const router = require('./src/routes/index.js')
 
-app.use('/api/productos', productosRouter)
+app.use('/api', router)
 
 app.get('/ping', (_, res) => {
     console.log("wanna a pong?")
     res.send("PONG")
 })
 
-const PORT = process.env.PORT || 8080
+app.use(errorHandler)
+app.use(morgan('dev'))
 
-app.listen(PORT, () => {
-    console.log(`Server listen on port http://localhost:${PORT}`)
-})
+module.exports = app
+
+

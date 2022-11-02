@@ -1,53 +1,41 @@
 const fs = require('fs')
 const productsJson = require("./productos.json")
 
-const getAllProducts = () => productsJson
+class Contenedor {
+    constructor(filename) {
+        this.filename = filename
+    }
+    getAllProducts = () => productsJson
 
-const getProductById = (id) => {
-    const findProduct = productsData.find(products => products.id === id)
-    return findProduct ? findProduct : `No se encuentra producto con el id ${id}`
-}
-
-const addProduct = async ({ title, price, thumbnail }) => {
-    try {
+    getProductById = (id) => {
+        const findProduct = this.getAllProducts().find(products => products.id === id)
+        return findProduct ? findProduct : `No se encuentra producto con el id ${id}`
+    }
+    addProduct = async (title, price, thumbnail) => {
         let newProduct = {
-            id: Math.max(...productsJson.map(product => product.id)) + 1,
+            id: Math.max(...this.getAllProducts().map(product => product.id)) + 1,
             title, price, thumbnail
         }
-
         productsJson.push(newProduct)
-
-        await fs.promises.writeFile('./src/services/productos.json', JSON.stringify(productsJson))
-
+        await fs.promises.writeFile(`./src/services/${this.filename}`, JSON.stringify(productsJson))
         return newProduct
-
-    } catch (error) {
-        throw new Error("No se pudo guardar el producto: " + title)
     }
-}
 
-const updateProduct = async (id, title, price, thumbnail) => {
-    try {
+    updateProduct = async ({ id, ...rest }) => {
         const indexOfProduct = productsJson.findIndex(product => product.id === id)
-        productsJson[indexOfProduct] = { id, title, price, thumbnail }
-
-        await fs.promises.writeFile('./src/services/productos.json', JSON.stringify(productsJson))
+        productsJson[indexOfProduct] = { id, ...rest }
+        await fs.promises.writeFile(`./src/services/${this.filename}`, JSON.stringify(productsJson))
 
         return `El producto con id ${id} fue actualizado`
-    } catch (error) {
-        throw new Error("No ")
     }
-}
 
-const deleteProduct = async (id) => {
-    try {
+    deleteProduct = async (id) => {
         const deletedProductsData = productsJson.filter(product => product.id != id)
-
-        await fs.promises.writeFile(`./src/services/productos.json`, JSON.stringify(deletedProductsData))
+        await fs.promises.writeFile(`./src/services/${this.filename}`, JSON.stringify(deletedProductsData))
         return id
-    } catch (error) {
-        throw new Error("No se puede eliminar el producto con id: " + id)
     }
 }
 
-module.exports = { getAllProducts, getProductById, addProduct, updateProduct, deleteProduct }
+const productosService = new Contenedor("productos.json")
+
+module.exports = { productosService }
